@@ -22,11 +22,6 @@ public class AppTest
     private JsonPath jsonPath = null;
     private String baseUrl = "https://petstore3.swagger.io/api/v3/";
 
-    @Test
-    public void call(){
-        getPet(11);
-    }
-
 
     public void getPet(Integer id)
     {
@@ -36,10 +31,6 @@ public class AppTest
                         .body("")
                         .when()
                         .get(baseUrl+"pet/"+id);
-
-        response.prettyPrint();
-        assertEquals(200, response.getStatusCode());
-
     }
 
     public void addNewPet(Pet pet) throws JsonProcessingException {
@@ -66,7 +57,7 @@ public class AppTest
         getPet(pet.getId());
 
         //save response body into a string and display the API call and response.
-        String jsonResponse = response.getBody().prettyPrint();
+        String jsonResponse = response.getBody().asString();
 
         //create an objectMapper for serialization and mapping of the POJO classes
         com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
@@ -85,7 +76,6 @@ public class AppTest
 
         // assert that the call was successful with response code 200
         assertEquals(200, response.getStatusCode());
-        response.prettyPrint();
 
     }
 
@@ -93,7 +83,7 @@ public class AppTest
     getPet(pet.getId());
 
     //save response body into a string and display the API call and response.
-    String jsonResponse = response.getBody().prettyPrint();
+    String jsonResponse = response.getBody().asString();
 
     //create an objectMapper for serialization and mapping of the POJO classes
     com.fasterxml.jackson.databind.ObjectMapper objectMapper = new com.fasterxml.jackson.databind.ObjectMapper();
@@ -112,7 +102,6 @@ public class AppTest
 
     // assert that the call was successful with response code 200
     assertEquals(200, response.getStatusCode());
-    response.prettyPrint();
 
 }
     public void deletePet(Pet pet ) throws JsonProcessingException {
@@ -215,9 +204,10 @@ public class AppTest
 
     }
 
-    public void validatePetDelete() throws JsonProcessingException {
+    public void validatePetDelete(Pet pet) throws JsonProcessingException {
+        getPet(pet.getId());
         assertEquals(404, response.getStatusCode());
-        assertEquals("The Pet is ", "Pet not found", response.getBody());
+        assertEquals("The Pet is ", "Pet not found", response.getBody().print());
 
         System.out.println("The pet has been successfully deleted : "+response.getBody().prettyPrint());
 
